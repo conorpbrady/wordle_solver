@@ -5,7 +5,7 @@ not_present_letters = []
 
 class WordleSolver:
 
-    absent_letters = =[]
+    absent_letters = []
     possible_words = []
 
     def __init__(filename):
@@ -54,7 +54,6 @@ def contains_bad_letters(bad_letters, word):
             return True
     return False
 
-# TODO Refactor - don't need to loop through pw list 3 times 
 def filter_word_list(possible_words, guess, matching):
     global not_present_letters
     filtered_words = possible_words.copy()
@@ -86,7 +85,9 @@ def filter_word_list(possible_words, guess, matching):
                     except:
                         pass
     return filtered_words
+
 def main():
+
     possible_words = read_word_list('words.txt')
 
     while len(possible_words) > 1:
@@ -98,17 +99,9 @@ def main():
         print(word_guess, matching)
         # TODO Check if word is a valid word
 
-        if matching.lower() == 'ggggg':
-            pass 
-        # possible_words.remove(word_guess)
-        print(len(possible_words))
         possible_words = filter_word_list(possible_words, word_guess, matching)
-        print(len(possible_words))
+        
         print(possible_words)
-
-
-
-
 
 if __name__ == '__main__':
     main()
