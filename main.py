@@ -1,6 +1,36 @@
 import re
 not_present_letters = []
 
+
+
+class WordleSolver:
+
+    absent_letters = =[]
+    possible_words = []
+
+    def __init__(filename):
+        with open(filename) as f:
+            self.possible_words = [line.lower().strip() for line in f.readlines()]
+
+    def filter_words(self):
+        pass
+
+    def add_to_absent_letters(self, letter_list):
+        for letter in letter_list:
+            absent_letters.append(letter)
+
+    def contains_absent_letters(self, word):
+        for letter in absent_letters:
+            if letter in word:
+                return False
+        return True
+
+
+
+
+
+# --- Semi-working script based approach below
+
 def read_word_list(filename):
     with open(filename) as f:
         wl = [l.lower().strip() for l in f.readlines()]
