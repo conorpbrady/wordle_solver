@@ -1,5 +1,12 @@
 import re
 
+class WordleValidationError(Exception):
+    pass
+    # def __init__(self, message):
+    #    self.message = message
+    #    super.__init__()
+
+
 class WordleSolver:
 
     absent_letters = []
@@ -44,10 +51,12 @@ class WordleSolver:
         original_list = self.possible_words.copy()
         
         for pw in original_list:
+            # Remove word from potential words based on eliminated letters
             if self.contains_absent_letters(pw):
                 del self.possible_words[pw]
                 continue
 
+            # Attempt to remove word based on G and Y rules
             if self.can_filter_word(pw, guess, matching_pattern):
                 continue
 
@@ -64,50 +73,38 @@ class WordleSolver:
     
     def validate_input(self, pattern, word):
         if re.match(pattern, word) is None:
-            # raise WordleValidationError
-            return False
-        return True
+            raise WordleValidationError("Input is not valid")
 
 def main():
     ws = WordleSolver('freq.csv')
     while len(ws.possible_words) > 1:
 
-        # TODO: Wrap in try / except blocks to get valid input
-        valid_input = False
+        valid_input = False 
         while not valid_input:
-            word_guess = input('Enter guessed word: ').lower()
-            valid_input = ws.validate_input('^[a-z]{5}$', word_guess)
+            try:
+                word_guess = input('Enter guessed word: ').lower()
+                ws.validate_input('^[a-z]{5}$', word_guess)
+                valid_input = True
+            except WordleValidationError as e:
+                print(str(e))
+                valid_input = False
+                continue
 
-        valid_input = False
-        while not valid_input:
-            matching = input('Enter matching: ').lower()
-            valid_input = ws.validate_input('^[gy_]{5}$', matching)
-            
-        #while not valid_input:
-        #    try:
-        #        word_guess = input('Enter guessed word: ').lower()
-        #        ws.validate_guess(word_guess)
-        #        valid_input = True
-        #    except WordleValidationError:
-        #        print("Invalid input")
-        #        valid_input = False
+            try:
+                matching = input('Enter matching pattern (GG_Y__):').lower()
+                ws.validate_input('^[gy_]{5}$', matching)
+                valid_input = True
+            except WordleValidationError as e:
+                print(str(e))
+                valid_input = False
 
-        #   try:
-        #        matching = input('Enter matching pattern (GG_Y__):').lower()
-        #        ws.validate_matching(matching)
-        #        valid_input = True
-        #    except WordleValidationError:
-        #        print('Invalid input')
-        #        valid_input = False
-
-    
-        # TODO Check if word is a valid word
         ws.filter_words(word_guess, matching)
         
         sorted_freq = dict(sorted(ws.possible_words.items(), key = lambda x: x[1], reverse = True)[:10])
 
         for k, v in sorted_freq.items():
             print('{}\t\t{}'.format(k, v))
+
 
 if __name__ == '__main__':
     main()
